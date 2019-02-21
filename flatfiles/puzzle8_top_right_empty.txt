@@ -3,14 +3,6 @@ For a game with 8 tiles of blocks on a 3x3 grid,
 write down the Facts and Rules to model the game state 
 shown as the follows:
 
- y\\x   pos1     pos2     pos3
-     ----------------------------
-pos1 | tile5  | tile4  | empty  |
-     ----------------------------
-pos2 | tile6  | tile1  | tile8  |
-     ----------------------------
-pos3 | tile7  | tile3  | tile2  |
-     ----------------------------
 
 Example: 
 fact: (pred obj1 obj2)
@@ -28,37 +20,24 @@ fact: (inst tile8 tile)
 fact: (inst empty tile)
 
 
-fact: (x tile5 pos1)
-fact: (y tile5 pos1)
-
-fact: (x tile4 pos2)
-fact: (y tile4 pos1)
-
-fact: (x empty pos3)
-fact: (y empty pos1)
-
-fact: (x tile6 pos1)
-fact: (y tile6 pos2)
-
-fact: (x tile1 pos2)
-fact: (y tile1 pos2)
-
-fact: (x tile8 pos3)
-fact: (y tile8 pos2)
-
-fact: (x tile7 pos1)
-fact: (y tile7 pos3)
-
-fact: (x tile3 pos2)
-fact: (y tile3 pos3)
-
-fact: (x tile2 pos3)
-fact: (y tile2 pos3)
-
-rule: ((x ?tileA ?a) (x ?tileB ?a) (y ?tileA pos2)) -> (adj ?tileA ?tileB)
-rule: ((x ?tileA ?a) (x ?tileB ?a) (y ?tileB pos2)) -> (adj ?tileA ?tileB)
-rule: ((y ?tileA ?b) (y ?tileB ?b) (x ?tileA pos2)) -> (adj ?tileA ?tileB)
-rule: ((y ?tileA ?b) (y ?tileB ?b) (x ?tileB pos2)) -> (adj ?tileA ?tileB)
+fact: (loc tile5 pos1 pos1)
+fact: (loc tile4 pos2 pos1)
+fact: (loc empty pos3 pos1)
 
 
-rule: ((x ?piece ?initialX) (y ?piece ?initialY) (x empty ?targetX) (y empty ?targetY) (adj ?piece empty)) -> (movable ?piece ?initialX ?initialY ?targetX ?targetY)
+fact: (loc tile6 pos1 pos2)
+fact: (loc tile1 pos2 pos2)
+fact: (loc tile8 pos3 pos2)
+
+fact: (loc tile7 pos1 pos3)
+fact: (loc tile3 pos2 pos3)
+fact: (loc tile2 pos3 pos3)
+
+
+rule: ((loc ?tileA ?a pos2) (loc ?tileB ?a ?z)) -> (adj ?tileA ?tileB)
+rule: ((loc ?tileA ?a ?z) (loc ?tileB ?a pos2)) -> (adj ?tileA ?tileB)
+rule: ((loc ?tileA pos2 ?b) (loc ?tileB ?z ?b)) -> (adj ?tileA ?tileB)
+rule: ((loc ?tileA ?z ?b) (loc ?tileB pos2 ?b)) -> (adj ?tileA ?tileB)
+
+
+rule: ((loc ?piece ?initialX ?initialY) (loc empty ?targetX ?targetY) (adj ?piece empty)) -> (movable ?piece ?initialX ?initialY ?targetX ?targetY)

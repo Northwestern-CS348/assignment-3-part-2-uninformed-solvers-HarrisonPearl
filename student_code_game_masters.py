@@ -68,6 +68,15 @@ class TowerOfHanoiGame(GameMaster):
         pegi = str(movable_statement.terms[1])
         pegf = str(movable_statement.terms[2])
 
+        # if the disk was on top of another disk, that disk becomes new top of pegi, else pegi is empty
+        stack_bindings = self.kb.kb_ask(parse_input("fact: (stacked " + disk + " ?y)"))
+        if stack_bindings:
+            new_top = stack_bindings[0]
+            self.kb.kb_retract(parse_input("fact: (stacked " + disk + " " + new_top['?y'] + ")"))
+            self.kb.kb_assert(parse_input("fact: (top " + new_top['?y'] + " " + pegi + ")"))
+        else:
+            self.kb.kb_assert(parse_input("fact: (empty " + pegi + ")"))
+
         # if pegf has a top, it is no longer the top, and disk is stacked on it
         # if pegf is empty, it is no longer empty
         top_bindings = self.kb.kb_ask(parse_input("fact: (top " + " ?x" + " " + pegf + ")"))
@@ -78,6 +87,8 @@ class TowerOfHanoiGame(GameMaster):
         else:
             self.kb.kb_retract(parse_input("fact: (empty " + pegf + ")"))
 
+
+
         # disk is no longer top of peg i, it it now top of pegf
         self.kb.kb_retract(parse_input("fact: (top " + disk + " " + pegi + ")"))
         self.kb.kb_assert(parse_input("fact: (top " + disk + " " + pegf + ")"))
@@ -86,14 +97,7 @@ class TowerOfHanoiGame(GameMaster):
         self.kb.kb_retract(parse_input("fact: (on " + disk + " " + pegi + ")"))
         self.kb.kb_assert(parse_input("fact: (on " + disk + " " + pegf + ")"))
 
-        # if the disk was on top of another disk, that disk becomes new top of pegi, else pegi is empty
-        stack_bindings = self.kb.kb_ask(parse_input("fact: (stacked " + disk + " ?y)"))
-        if stack_bindings:
-            new_top = stack_bindings[0]
-            self.kb.kb_retract(parse_input("fact: (stacked " + disk + " " + new_top['?y'] + ")"))
-            self.kb.kb_assert(parse_input("fact: (top " + new_top['?y'] + " " + pegi + ")"))
-        else:
-            self.kb.kb_assert(parse_input("fact: (empty " + pegi + ")"))
+
 
 
 
@@ -150,22 +154,106 @@ class Puzzle8Game(GameMaster):
         # fact: (y tile1 pos1)
 
         res_tup = []
-        for i in range(1, 4):
-            peg_tup = [99, 99, 99]
-            bindings = self.kb.kb_ask(parse_input("fact: (y ?tile pos" + str(i) + ")"))
-            if bindings:
-                for binding in bindings:
-                    tile_str = binding['?tile']
-                    if tile_str == "empty":
-                        tile_int = -1
-                    else:
-                        tile_int = int(tile_str[-1])
-                    xpos_bindings = self.kb.kb_ask(parse_input("fact: (x " + tile_str + " ?y)"))
-                    xpos_binding = xpos_bindings[0]
-                    xpos_string = xpos_binding['?y']
-                    xpos_int = int(xpos_string[-1]) - 1
-                    peg_tup[xpos_int] = tile_int
-            res_tup.append(tuple(peg_tup))
+        peg1_tup = []
+        peg2_tup = []
+        peg3_tup = []
+
+        #create peg1 tup
+        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos1 pos1)"))
+        if bindings:
+            tile_bind = bindings[0]
+            tile_str = tile_bind['?tile']
+            if tile_str == "empty":
+                tile_int = -1
+            else:
+                tile_int = int(tile_str[-1])
+            peg1_tup.append(tile_int)
+
+        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos2 pos1)"))
+        if bindings:
+            tile_bind = bindings[0]
+            tile_str = tile_bind['?tile']
+            if tile_str == "empty":
+                tile_int = -1
+            else:
+                tile_int = int(tile_str[-1])
+            peg1_tup.append(tile_int)
+
+        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos3 pos1)"))
+        if bindings:
+            tile_bind = bindings[0]
+            tile_str = tile_bind['?tile']
+            if tile_str == "empty":
+                tile_int = -1
+            else:
+                tile_int = int(tile_str[-1])
+            peg1_tup.append(tile_int)
+
+        # create peg2 tup
+        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos1 pos2)"))
+        if bindings:
+            tile_bind = bindings[0]
+            tile_str = tile_bind['?tile']
+            if tile_str == "empty":
+                tile_int = -1
+            else:
+                tile_int = int(tile_str[-1])
+            peg2_tup.append(tile_int)
+
+        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos2 pos2)"))
+        if bindings:
+            tile_bind = bindings[0]
+            tile_str = tile_bind['?tile']
+            if tile_str == "empty":
+                tile_int = -1
+            else:
+                tile_int = int(tile_str[-1])
+            peg2_tup.append(tile_int)
+
+        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos3 pos2)"))
+        if bindings:
+            tile_bind = bindings[0]
+            tile_str = tile_bind['?tile']
+            if tile_str == "empty":
+                tile_int = -1
+            else:
+                tile_int = int(tile_str[-1])
+            peg2_tup.append(tile_int)
+
+        # create peg3 tup
+        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos1 pos3)"))
+        if bindings:
+            tile_bind = bindings[0]
+            tile_str = tile_bind['?tile']
+            if tile_str == "empty":
+                tile_int = -1
+            else:
+                tile_int = int(tile_str[-1])
+            peg3_tup.append(tile_int)
+
+        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos2 pos3)"))
+        if bindings:
+            tile_bind = bindings[0]
+            tile_str = tile_bind['?tile']
+            if tile_str == "empty":
+                tile_int = -1
+            else:
+                tile_int = int(tile_str[-1])
+            peg3_tup.append(tile_int)
+
+        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos3 pos3)"))
+        if bindings:
+            tile_bind = bindings[0]
+            tile_str = tile_bind['?tile']
+            if tile_str == "empty":
+                tile_int = -1
+            else:
+                tile_int = int(tile_str[-1])
+            peg3_tup.append(tile_int)
+
+        res_tup.append(tuple(peg1_tup))
+        res_tup.append(tuple(peg2_tup))
+        res_tup.append(tuple(peg3_tup))
 
         return tuple(res_tup)
 
@@ -192,17 +280,13 @@ class Puzzle8Game(GameMaster):
         xf = str(movable_statement.terms[3])
         yf = str(movable_statement.terms[4])
 
-        self.kb.kb_retract(parse_input("fact: (x " + tile + " " + xi + ")"))
-        self.kb.kb_retract(parse_input("fact: (y " + tile + " " + yi + ")"))
+        self.kb.kb_retract(parse_input("fact: (loc " + tile + " " + xi + " " + yi + ")"))
+        self.kb.kb_retract(parse_input("fact: (loc  empty " + xf + " " + yf + ")"))
 
-        self.kb.kb_retract(parse_input("fact: (x empty " + xf + ")"))
-        self.kb.kb_retract(parse_input("fact: (y empty " + yf + ")"))
+        self.kb.kb_assert(parse_input("fact: (loc " + tile + " " + xf + " " + yf + ")"))
+        self.kb.kb_assert(parse_input("fact: (loc  empty " + xi + " " + yi + ")"))
 
-        self.kb.kb_assert(parse_input("fact: (x empty " + xi + ")"))
-        self.kb.kb_assert(parse_input("fact: (y empty " + yi + ")"))
 
-        self.kb.kb_assert(parse_input("fact: (x " + tile + " " + xf + ")"))
-        self.kb.kb_assert(parse_input("fact: (y " + tile + " " + yf + ")"))
 
 
 
