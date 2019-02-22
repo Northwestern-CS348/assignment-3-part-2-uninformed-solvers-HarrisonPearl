@@ -67,37 +67,56 @@ class TowerOfHanoiGame(GameMaster):
         disk = str(movable_statement.terms[0])
         pegi = str(movable_statement.terms[1])
         pegf = str(movable_statement.terms[2])
+        curr_state = self.getGameState()
 
-        # if the disk was on top of another disk, that disk becomes new top of pegi, else pegi is empty
-        stack_bindings = self.kb.kb_ask(parse_input("fact: (stacked " + disk + " ?y)"))
-        if stack_bindings:
-            new_top = stack_bindings[0]
-            self.kb.kb_retract(parse_input("fact: (stacked " + disk + " " + new_top['?y'] + ")"))
-            self.kb.kb_assert(parse_input("fact: (top " + new_top['?y'] + " " + pegi + ")"))
+        pegf_tup = curr_state[int(pegf[-1]) - 1]
+        if len(pegf_tup) == 0:
+            self.kb.kb_retract(parse_input("fact: (empty " + pegf + ")"))
+        else:
+            self.kb.kb_retract(parse_input("fact: top disk" + str(pegf_tup[0]) + " " + pegf + ")"))
+
+        self.kb.kb_retract(parse_input("fact: (on " + disk + " " + pegi + ")"))
+        self.kb.kb_retract(parse_input("fact: (top " + disk + " " + pegi + ")"))
+        self.kb.kb_assert(parse_input("fact: (on " + disk + " " + pegf + ")"))
+        self.kb.kb_assert(parse_input("fact: (top " + disk + " " + pegf + ")"))
+
+        pegi_tup = curr_state[int(pegi[-1]) - 1]
+        if len(pegi_tup) > 1:
+            self.kb.kb_assert(parse_input("fact: top disk" + str(pegi_tup[1]) + " " + pegi + ")"))
         else:
             self.kb.kb_assert(parse_input("fact: (empty " + pegi + ")"))
 
-        # if pegf has a top, it is no longer the top, and disk is stacked on it
-        # if pegf is empty, it is no longer empty
-        top_bindings = self.kb.kb_ask(parse_input("fact: (top " + " ?x" + " " + pegf + ")"))
-        if top_bindings:
-            old_top = top_bindings[0]
-            self.kb.kb_retract(parse_input("fact: (top " + old_top['?x'] + " " + pegf + ")"))
-            self.kb.kb_assert(parse_input("fact: (stacked " + disk + " " + old_top['?x'] + ")"))
-        else:
-            self.kb.kb_retract(parse_input("fact: (empty " + pegf + ")"))
 
 
-
-        # disk is no longer top of peg i, it it now top of pegf
-        self.kb.kb_retract(parse_input("fact: (top " + disk + " " + pegi + ")"))
-        self.kb.kb_assert(parse_input("fact: (top " + disk + " " + pegf + ")"))
-
-        # disk is no longer on peg i, it is on pegf
-        self.kb.kb_retract(parse_input("fact: (on " + disk + " " + pegi + ")"))
-        self.kb.kb_assert(parse_input("fact: (on " + disk + " " + pegf + ")"))
-
-
+        # # if pegf has a top, it is no longer the top, and disk is stacked on it
+        # # if pegf is empty, it is no longer empty
+        # top_bindings = self.kb.kb_ask(parse_input("fact: (top " + " ?x" + " " + pegf + ")"))
+        # if top_bindings:
+        #     old_top = top_bindings[0]
+        #     self.kb.kb_retract(parse_input("fact: (top " + old_top['?x'] + " " + pegf + ")"))
+        #     self.kb.kb_assert(parse_input("fact: (stacked " + disk + " " + old_top['?x'] + ")"))
+        # else:
+        #     self.kb.kb_retract(parse_input("fact: (empty " + pegf + ")"))
+        #
+        #
+        #
+        #
+        # # if the disk was on top of another disk, that disk becomes new top of pegi, else pegi is empty
+        # stack_bindings = self.kb.kb_ask(parse_input("fact: (stacked " + disk + " ?y)"))
+        # if stack_bindings:
+        #     new_top = stack_bindings[0]
+        #     self.kb.kb_retract(parse_input("fact: (stacked " + disk + " " + new_top['?y'] + ")"))
+        #     self.kb.kb_assert(parse_input("fact: (top " + new_top['?y'] + " " + pegi + ")"))
+        # else:
+        #     self.kb.kb_assert(parse_input("fact: (empty " + pegi + ")"))
+        #
+        # # disk is no longer top of peg i, it it now top of pegf
+        #
+        # self.kb.kb_assert(parse_input("fact: (top " + disk + " " + pegf + ")"))
+        #
+        # # disk is no longer on peg i, it is on pegf
+        #
+        # self.kb.kb_assert(parse_input("fact: (on " + disk + " " + pegf + ")"))
 
 
 

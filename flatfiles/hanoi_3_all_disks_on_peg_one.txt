@@ -38,8 +38,6 @@ fact: (stacked disk1 disk2)
 fact: (stacked disk2 disk3)
 
 
-
-
 fact: (top disk1 peg1)
 fact: (empty peg2)
 fact: (empty peg3)
