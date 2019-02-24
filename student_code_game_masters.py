@@ -176,105 +176,123 @@ class Puzzle8Game(GameMaster):
         peg1_tup = []
         peg2_tup = []
         peg3_tup = []
-
-        #create peg1 tup
-        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos1 pos1)"))
-        if bindings:
-            tile_bind = bindings[0]
-            tile_str = tile_bind['?tile']
-            if tile_str == "empty":
-                tile_int = -1
-            else:
-                tile_int = int(tile_str[-1])
-            peg1_tup.append(tile_int)
-
-        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos2 pos1)"))
-        if bindings:
-            tile_bind = bindings[0]
-            tile_str = tile_bind['?tile']
-            if tile_str == "empty":
-                tile_int = -1
-            else:
-                tile_int = int(tile_str[-1])
-            peg1_tup.append(tile_int)
-
-        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos3 pos1)"))
-        if bindings:
-            tile_bind = bindings[0]
-            tile_str = tile_bind['?tile']
-            if tile_str == "empty":
-                tile_int = -1
-            else:
-                tile_int = int(tile_str[-1])
-            peg1_tup.append(tile_int)
-
-        # create peg2 tup
-        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos1 pos2)"))
-        if bindings:
-            tile_bind = bindings[0]
-            tile_str = tile_bind['?tile']
-            if tile_str == "empty":
-                tile_int = -1
-            else:
-                tile_int = int(tile_str[-1])
-            peg2_tup.append(tile_int)
-
-        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos2 pos2)"))
-        if bindings:
-            tile_bind = bindings[0]
-            tile_str = tile_bind['?tile']
-            if tile_str == "empty":
-                tile_int = -1
-            else:
-                tile_int = int(tile_str[-1])
-            peg2_tup.append(tile_int)
-
-        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos3 pos2)"))
-        if bindings:
-            tile_bind = bindings[0]
-            tile_str = tile_bind['?tile']
-            if tile_str == "empty":
-                tile_int = -1
-            else:
-                tile_int = int(tile_str[-1])
-            peg2_tup.append(tile_int)
-
-        # create peg3 tup
-        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos1 pos3)"))
-        if bindings:
-            tile_bind = bindings[0]
-            tile_str = tile_bind['?tile']
-            if tile_str == "empty":
-                tile_int = -1
-            else:
-                tile_int = int(tile_str[-1])
-            peg3_tup.append(tile_int)
-
-        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos2 pos3)"))
-        if bindings:
-            tile_bind = bindings[0]
-            tile_str = tile_bind['?tile']
-            if tile_str == "empty":
-                tile_int = -1
-            else:
-                tile_int = int(tile_str[-1])
-            peg3_tup.append(tile_int)
-
-        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos3 pos3)"))
-        if bindings:
-            tile_bind = bindings[0]
-            tile_str = tile_bind['?tile']
-            if tile_str == "empty":
-                tile_int = -1
-            else:
-                tile_int = int(tile_str[-1])
-            peg3_tup.append(tile_int)
-
-        res_tup.append(tuple(peg1_tup))
-        res_tup.append(tuple(peg2_tup))
-        res_tup.append(tuple(peg3_tup))
-
+    
+        res_tup = []
+        for i in range(1, 4):
+            peg_tup = [99, 99, 99]
+            bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile ?x pos" + str(i) + ")"))
+            if bindings:
+                for binding in bindings:
+                    tile_str = binding['?tile']
+                    xpos_str = binding['?x']
+                    xpos = int(xpos_str[-1]) - 1
+                    if tile_str == "empty":
+                        tile_int = -1
+                    else:
+                        tile_int = int(tile_str[-1])
+                    peg_tup[xpos] = tile_int
+            res_tup.append(tuple(peg_tup))
+        
         return tuple(res_tup)
+
+#        #create peg1 tup
+#        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos1 pos1)"))
+#        if bindings:
+#            tile_bind = bindings[0]
+#            tile_str = tile_bind['?tile']
+#            if tile_str == "empty":
+#                tile_int = -1
+#            else:
+#                tile_int = int(tile_str[-1])
+#            peg1_tup.append(tile_int)
+#
+#        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos2 pos1)"))
+#        if bindings:
+#            tile_bind = bindings[0]
+#            tile_str = tile_bind['?tile']
+#            if tile_str == "empty":
+#                tile_int = -1
+#            else:
+#                tile_int = int(tile_str[-1])
+#            peg1_tup.append(tile_int)
+#
+#        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos3 pos1)"))
+#        if bindings:
+#            tile_bind = bindings[0]
+#            tile_str = tile_bind['?tile']
+#            if tile_str == "empty":
+#                tile_int = -1
+#            else:
+#                tile_int = int(tile_str[-1])
+#            peg1_tup.append(tile_int)
+#
+#        # create peg2 tup
+#        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos1 pos2)"))
+#        if bindings:
+#            tile_bind = bindings[0]
+#            tile_str = tile_bind['?tile']
+#            if tile_str == "empty":
+#                tile_int = -1
+#            else:
+#                tile_int = int(tile_str[-1])
+#            peg2_tup.append(tile_int)
+#
+#        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos2 pos2)"))
+#        if bindings:
+#            tile_bind = bindings[0]
+#            tile_str = tile_bind['?tile']
+#            if tile_str == "empty":
+#                tile_int = -1
+#            else:
+#                tile_int = int(tile_str[-1])
+#            peg2_tup.append(tile_int)
+#
+#        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos3 pos2)"))
+#        if bindings:
+#            tile_bind = bindings[0]
+#            tile_str = tile_bind['?tile']
+#            if tile_str == "empty":
+#                tile_int = -1
+#            else:
+#                tile_int = int(tile_str[-1])
+#            peg2_tup.append(tile_int)
+#
+#        # create peg3 tup
+#        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos1 pos3)"))
+#        if bindings:
+#            tile_bind = bindings[0]
+#            tile_str = tile_bind['?tile']
+#            if tile_str == "empty":
+#                tile_int = -1
+#            else:
+#                tile_int = int(tile_str[-1])
+#            peg3_tup.append(tile_int)
+#
+#        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos2 pos3)"))
+#        if bindings:
+#            tile_bind = bindings[0]
+#            tile_str = tile_bind['?tile']
+#            if tile_str == "empty":
+#                tile_int = -1
+#            else:
+#                tile_int = int(tile_str[-1])
+#            peg3_tup.append(tile_int)
+#
+#        bindings = self.kb.kb_ask(parse_input("fact: (loc ?tile pos3 pos3)"))
+#        if bindings:
+#            tile_bind = bindings[0]
+#            tile_str = tile_bind['?tile']
+#            if tile_str == "empty":
+#                tile_int = -1
+#            else:
+#                tile_int = int(tile_str[-1])
+#            peg3_tup.append(tile_int)
+#
+#        res_tup.append(tuple(peg1_tup))
+#        res_tup.append(tuple(peg2_tup))
+#        res_tup.append(tuple(peg3_tup))
+#
+#        return tuple(res_tup)
 
     def makeMove(self, movable_statement):
         """

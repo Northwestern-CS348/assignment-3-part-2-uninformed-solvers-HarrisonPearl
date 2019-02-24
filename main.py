@@ -37,7 +37,7 @@ class KBTest(unittest.TestCase):
         """
         solver.solve()
 
-    def runPlayXSteps(self, solver, plays, timeout=50): #set back to 5!!!
+    def runPlayXSteps(self, solver, plays, timeout=5): #set back to 5!!!
         """
         Wrapper function; calls playXSteps(..) with a timeout
 
@@ -54,7 +54,7 @@ class KBTest(unittest.TestCase):
         except TimeoutError:
             raise Exception("Timed out: %s" % inspect.stack()[1][3])
 
-    def runSolve(self, solver, timeout=50): #set back to 5!!!
+    def runSolve(self, solver, timeout=5): #set back to 5!!!
         """
         Wrapper function; calls solve(..) with a timeout
 
@@ -136,22 +136,7 @@ class KBTest(unittest.TestCase):
             [20, ((), (2, 3), (1,))],
         ])
 
-    def test04_BFS_HanoiCopy(self):
-        th = TowerOfHanoiGame()
-        th.read('hanoi_3_all_disks_on_peg_one.txt')
-        required = [
-            'fact: (movable disk1 peg3 peg1)',
-            'fact: (movable disk1 peg3 peg2)',
-        ]
-        th.setWinningCondition(required, 'hanoi_all_forbidden.txt')
-        self.assertFalse(th.isWon())
-
-        solver = SolverBFS(th,((),(),(1,2,3)))
-
-        self.runPlayXSteps(solver, [
-            # [step, expected game state]
-            [10, ((), (1, 2), (3,))],
-        ])
+ 
 
     def test05_BFS_Hanoi(self):
         th = TowerOfHanoiGame()
